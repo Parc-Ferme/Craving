@@ -9,6 +9,11 @@ import SwiftUI
 
 struct SwiggyView: View {
     
+    var stickyHeaderHeight: CGFloat = 0
+    var isStickyHeaderVisible: Bool = false
+    
+    let restraurantImages =  ["bbq", "kfc", "cakes", "burger", "tea", "pizza", "paratha", "paneer", "pakoda", "mcdonalds"]
+    
     var body: some View {
         
         NavigationStack {
@@ -16,140 +21,73 @@ struct SwiggyView: View {
             VStack {
                 
                 HeaderView()
-                    .border(.red)
                 
                 ScrollView {
                     
-                    LazyVStack (spacing: 16) {
+                    LazyVStack (spacing: 10) {
                         
-                        Section {
-                            CircularImageScroll()
-                        }
-                       
+                        CircularImageScroll()
                         
-                        SectionView(title: "Cuisines") {
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack {
-                                    // Add your content here
-                                    ForEach(0..<10) { index in
-                                        Text("Item \(index)")
-                                            .frame(width: 100, height: 60) // Each item width and height
-                                            .background(Color.blue)
-                                            .foregroundColor(.white)
-                                            .cornerRadius(10)
-                                            .padding(.horizontal, 5) // Optional padding between items
-                                    }
-                                }
-                                .frame(height: 60) // Set the height of the HStack to 60
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: 60) // Ensure the ScrollView takes full width and 60 height
-                            .border(.brown)
-                        }
-                        .border(.red)
+                        FoodCuisineView()
                         
-                        SectionView(title: "Restraurants") {
-                            LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                                Section(header:
-                                            Text("Row 1")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.green)
-                                    .foregroundColor(.white)
-                                ) {
-                                    ForEach(2..<20) { index in
-                                        Text("Row \(index)")
-                                            .frame(maxWidth: .infinity)
-                                            .padding()
-                                            .background(Color.green)
-                                            .foregroundColor(.white)
-                                            .cornerRadius(8)
-                                    }
+                        ZStack{
+                            
+                            VStack {
+                                
+                                ForEach(0..<restraurantImages.count, id: \.self) { index in
+                                    
+                                    RestraurantListView(restraurantImage: restraurantImages[index])
                                 }
                             }
-                            .padding(.horizontal)
+                            .padding(.top, 60)
+                            
+                            GeometryReader { gr in
+                                
+                                StickyFilterView()
+                                    .aspectRatio(contentMode: .fill)
+                                    .offset(y: {
+                                        let minY = gr.frame(in: .global).origin.y
+                                        if (minY < 172) {
+                                            return 172 - minY
+                                        }
+                                        else if (minY < 0) {
+                                            return 172 + abs(minY)
+                                        }
+                                        else {
+                                            return 0
+                                        }
+                                    }())
+                                    .shadow(radius: self.calculateHeight(minHeight: 120,
+                                                                         maxHeight: 300,
+                                                                         yOffset: gr.frame(in: .global).origin.y) < 140 ? 8 : 0)
+                                    .overlay(
+                                        Text("SAINZ")
+                                            .font(.system(size: 70, weight: .black))
+                                            .foregroundColor(.white)
+                                            .opacity(0.8))
+                            }
                         }
-                        .border(.red)
-                        
                     }
                 }
-                
             }
-            .refreshable {
-                // Add function to refresh screen
-            }
+            .scrollIndicators(.hidden)
         }
-        .border(.red)
-        //.edgesIgnoringSafeArea(.top)
-        
-        
-        // Handle Screen Refresh
-    }
-    
-}
-
-
-struct HeaderView: View {
-    
-    var body: some View {
-        VStack {
-            
-            HStack {
-                
-                NavigationLink(destination: LocationView()) {
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Image(systemName: "house.fill")
-                            Text("Home")
-                            Image(systemName: "chevron.down")
-                        }
-                        .border(.red)
-                        
-                        Text("Silverstone Circuit, Towcester NN12 8TN, United Kingdom")
-                            .lineLimit(1)
-                            .frame(width: 300)
-                            .truncationMode(.tail)
-                        
-                        
-                    }
-                
-                    Spacer()
-                    
-                    NavigationLink(destination: AccountView()) {
-                        Image(systemName: "person.circle.fill")
-                            .font(.system(size: 37))
-                    }
-                    .border(.red)
-                }
-            }
-            .padding(.horizontal)
-            
-            SearchBarView()
-            
-            
+        .refreshable {
+            // Add function to refresh screen
         }
     }
-}
-
-
-struct SectionView<Content: View> : View {
     
-    let title: String
-    let content: Content
-    
-    init(title: String, @ViewBuilder content: () -> Content) {
-        self.title = title
-        self.content = content()
-    }
-    
-    var body: some View {
-        
-        VStack {
-            
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.black)
-            content
+    func calculateHeight(minHeight: CGFloat, maxHeight: CGFloat, yOffset: CGFloat) -> CGFloat {
+        // If scrolling up, yOffset will be a negative number
+        if maxHeight + yOffset < minHeight {
+            // SCROLLING UP
+            // Never go smaller than our minimum height
+            return minHeight
         }
+        
+        
+        // SCROLLING DOWN
+        return maxHeight + yOffset
     }
 }
 
