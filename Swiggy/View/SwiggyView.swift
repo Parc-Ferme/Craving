@@ -9,8 +9,7 @@ import SwiftUI
 
 struct SwiggyView: View {
     
-    var stickyHeaderHeight: CGFloat = 0
-    var isStickyHeaderVisible: Bool = false
+    @State private var HeaderHeight: CGFloat = 0
     
     let restraurantImages =  ["bbq", "kfc", "cakes", "burger", "tea", "pizza", "paratha", "paneer", "pakoda", "mcdonalds"]
     
@@ -20,7 +19,7 @@ struct SwiggyView: View {
             
             VStack {
                 
-                HeaderView()
+                HeaderView(HeaderHeight: $HeaderHeight)
                 
                 ScrollView {
                     
@@ -30,7 +29,7 @@ struct SwiggyView: View {
                         
                         FoodCuisineView()
                         
-                        ZStack{
+                        ZStack {
                             
                             VStack {
                                 
@@ -47,11 +46,11 @@ struct SwiggyView: View {
                                     .aspectRatio(contentMode: .fill)
                                     .offset(y: {
                                         let minY = gr.frame(in: .global).origin.y
-                                        if (minY < 172) {
-                                            return 172 - minY
+                                        if (minY < HeaderHeight) {
+                                            return HeaderHeight - minY
                                         }
                                         else if (minY < 0) {
-                                            return 172 + abs(minY)
+                                            return HeaderHeight + abs(minY)
                                         }
                                         else {
                                             return 0
@@ -60,15 +59,13 @@ struct SwiggyView: View {
                                     .shadow(radius: self.calculateHeight(minHeight: 120,
                                                                          maxHeight: 300,
                                                                          yOffset: gr.frame(in: .global).origin.y) < 140 ? 8 : 0)
-                                    .overlay(
-                                        Text("SAINZ")
-                                            .font(.system(size: 70, weight: .black))
-                                            .foregroundColor(.white)
-                                            .opacity(0.8))
+                                    
+
                             }
                         }
                     }
                 }
+                .scrollBounceBehavior(.basedOnSize)
             }
             .scrollIndicators(.hidden)
         }

@@ -23,7 +23,7 @@ struct RestraurantListView: View {
                         .resizable()
                         .frame(width: 140, height: 170)
                         .cornerRadius(15)
-                        .shadow(radius: 23)
+                        .shadow(radius: 2)
                         .padding(.vertical,5)
                     
                     VStack(alignment: .leading, spacing: 4) {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct SwiggyApp: App {
@@ -13,5 +14,10 @@ struct SwiggyApp: App {
         WindowGroup {
             SwiggyView()
         }
+        .modelContainer(for: Restraurant.self)
     }
 }
+
+
+
+

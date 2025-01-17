@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HeaderView: View {
     
+    @Binding var HeaderHeight: CGFloat
+    
     var body: some View {
         
         VStack {
@@ -62,9 +64,20 @@ struct HeaderView: View {
             
             SearchBarView()
         }
+        .overlay (
+            GeometryReader { proxy in
+                Color.clear
+                    .onChange(of: proxy.frame(in: .global)) { oldFrame, newFrame in
+                        
+                        HeaderHeight = newFrame.maxY
+                    }
+            }
+        )
     }
 }
 
 #Preview {
-    HeaderView()
+    @Previewable @State var stickyHeight: CGFloat = 0
+    
+    HeaderView(HeaderHeight: $stickyHeight)
 }
