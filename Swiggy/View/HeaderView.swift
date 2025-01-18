@@ -1,13 +1,8 @@
-//
-//  HeaderView.swift
-//  Swiggy
-//
-//  Created by Ankit Yadav on 17/01/25.
-//
-
 import SwiftUI
 
 struct HeaderView: View {
+    
+    @ObservedObject var restaurantViewModel: RestaurantViewModel
     
     @Binding var HeaderHeight: CGFloat
     
@@ -38,7 +33,7 @@ struct HeaderView: View {
                                 .font(.system(size: 16, weight: .regular))
                         }
                         
-                        Text("Silverstone Circuit, Towcester NN12 8TN, United Kingdom")
+                        Text("Stratford Halo, High Street, Stratford, London E15 2NE")
                             .lineLimit(1)
                             .frame(width: 250)
                             .truncationMode(.tail)
@@ -62,7 +57,7 @@ struct HeaderView: View {
             }
             .padding(.horizontal)
             
-            SearchBarView()
+            SearchBarView(restaurantViewModel: restaurantViewModel, searchText: restaurantViewModel.searchText)
         }
         .overlay (
             GeometryReader { proxy in
@@ -77,7 +72,9 @@ struct HeaderView: View {
 }
 
 #Preview {
+    
+    @Previewable @StateObject var rViewModel = RestaurantViewModel()
     @Previewable @State var stickyHeight: CGFloat = 0
     
-    HeaderView(HeaderHeight: $stickyHeight)
+    HeaderView(restaurantViewModel: rViewModel, HeaderHeight: $stickyHeight)
 }

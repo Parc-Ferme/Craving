@@ -1,10 +1,3 @@
-//
-//  DesignSystems.swift
-//  Swiggy
-//
-//  Created by Ankit Yadav on 16/01/25.
-//
-
 import SwiftUI
 
 // Enum to hold the Montserrat font weights for type safety
@@ -57,3 +50,104 @@ struct FadingLineView: View {
             .frame(height: height) // Adjust thickness of the line
     }
 }
+
+// View the image to enlarge it if you scroll below the limit.
+struct StretchableImageView: View {
+    
+    @Binding var isTitleVisible: Bool
+    
+    let imageName: String
+    
+    var body: some View {
+        
+        GeometryReader { geometry in
+            
+            let yOffset = geometry.frame(in: .global).minY
+            let height = max(300 + yOffset, 300) // Stretch height dynamically
+            
+            AsyncImage(url: URL(string: imageName))
+                .scaledToFill()
+                .frame(width: geometry.size.width, height: height)
+                .clipped()
+                .offset(y: yOffset < 0 ? 0 : -yOffset) // Push back up when stretched
+                .onChange(of: yOffset) {
+                    if yOffset < 0 {
+                        isTitleVisible = true
+                    } else {
+                        isTitleVisible = false
+                    }
+                }
+            
+        }
+        .frame(height: 300)
+    }
+}
+
+extension Double {
+    func truncated(to: Int) -> String {
+        String(format: "%.\(to)f", self)
+    }
+}
+
+
+
+//Sticky Header Modifiers
+
+extension View {
+    func sticky (_ stickyRects: [CGRect], _ containerName: String) -> some View {
+        return modifier(Sticky(stickyRects: stickyRects, containerName: containerName))
+    }
+}
+
+struct FramePreferenceKey: PreferenceKey {
+    static var defaultValue: [CGRect] = []
+    
+    static func reduce(value: inout [CGRect], nextValue: () -> [CGRect]) {
+        value.append(contentsOf: nextValue())
+    }
+}
+
+struct Sticky: ViewModifier {
+    
+    var stickyRects: [CGRect]
+    var containerName: String
+    @State var frame: CGRect = .zero
+    
+    var isSticky: Bool {
+        frame.minY < 0
+    }
+    
+    var offsetValue: CGFloat {
+        guard isSticky else { return 0 }
+        
+        var offValue = abs(frame.minY)
+        
+        if let firstStickyRect = stickyRects.first(where: { $0.minY > frame.minY && $0.minY < frame.height}) {
+            
+            offValue -= (frame.height - firstStickyRect.minY)
+            
+        }
+        
+        return offValue
+    }
+    
+    func body(content: Content) -> some View {
+        content
+            .offset(y: offsetValue)
+            .zIndex(isSticky ? .infinity : 0)
+            .overlay(GeometryReader { proxy in
+                let f = proxy.frame(in: .named(self.containerName))
+                
+                Color.clear
+                    .onAppear {
+                        self.frame = f
+                    }
+                    .onChange(of: f) { oldFrame, newFrame in
+                        frame = newFrame
+                    }
+                    .preference(key: FramePreferenceKey.self, value: [frame])
+            })
+    }
+}
+
+

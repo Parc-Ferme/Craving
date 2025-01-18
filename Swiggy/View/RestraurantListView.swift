@@ -1,30 +1,35 @@
-//
-//  RestraurantListView.swift
-//  Swiggy
-//
-//  Created by Ankit Yadav on 16/01/25.
-//
-
 import SwiftUI
 
-struct RestraurantListView: View {
+struct RestaurantListView: View {
     
-    var restraurantImage: String?
+    @Environment(\.redactionReasons) var redactedReasons
+    
+    @Namespace var namespace
+    @ObservedObject var restaurantViewModel: RestaurantViewModel
     
     var body: some View {
         
-        NavigationLink(destination: RestraurantDetailView()) {
+        LazyVStack(spacing: 20) {
             
-            ZStack (alignment: .leading) {
+            let restaurants = restaurantViewModel.restaurants
+            
+            ForEach(restaurants, id: \.id) { restaurant in
                 
-                HStack (spacing: 18){
-                    
-                    Image(restraurantImage!)
-                        .resizable()
-                        .frame(width: 140, height: 170)
-                        .cornerRadius(15)
-                        .shadow(radius: 2)
-                        .padding(.vertical,5)
+                HStack {
+                    NavigationLink(destination: RestaurantDetailView(restaurant: restaurant, namespace: namespace)
+                    ) {
+                        
+                        ZStack (alignment: .leading) {
+                            
+                            HStack (spacing: 18){
+                                
+                                ImageView(imageURL: restaurant.image)
+            
+                            }
+                            
+                            
+                        }
+                    }
                     
                     VStack(alignment: .leading, spacing: 4) {
                         
@@ -33,30 +38,30 @@ struct RestraurantListView: View {
                             Image(systemName: "trophy.circle.fill")
                                 .foregroundColor(.gold)
                             
-                            Text("Best In North Indian")
+                            Text(restaurant.speciality)
                                 .font(.montserrat(.semiBold, size: 15))
-                                .foregroundColor(.primary.opacity(0.6))
+                                .foregroundColor(.black.opacity(0.6))
                         }
                         
-                        Text("Punjabi Angithi (Vegora...)")
+                        Text(restaurant.name)
                             .font(.montserrat(.extraBold, size: 19))
                             .lineLimit(1)
-                            .foregroundColor(.primary)
+                            .foregroundColor(.black)
                         
                         HStack(spacing: 3) {
                             
                             Image(systemName: "star.circle.fill")
                                 .foregroundColor(.darkGreen)
                             
-                            Text("4.3 (40K+)")
+                            Text("\(restaurant.rating.truncated(to: 1)) (\(restaurant.viewCount.truncated(to: 1))K)")
                                 .font(.custom("Monteserrat-Regular", size: 14))
                                 .foregroundStyle(Color.darkGreen)
                             
                             Circle()
                                 .frame(width: 4, height: 4)
-                                .foregroundStyle(Color.primary.opacity(0.5))
+                                .foregroundStyle(Color.black.opacity(0.5))
                             
-                            Text("35-40 mins")
+                            Text("\(restaurant.deliveryTime - 5) - \(restaurant.deliveryTime + 5) mins")
                                 .font(.custom("Monteserrat-Bold", size: 15))
                                 .foregroundColor(.darkPurple)
                             
@@ -66,13 +71,19 @@ struct RestraurantListView: View {
                                 .foregroundColor(.darkPurple)
                         }
                         
-                        Text("North Indian, Chinese, Tandoor") // Cuisine types
+                        Text(restaurant.cuisine.joined(separator: ", ")) // Cuisine types
                             .font(.montserrat(.regular, size: 13))
-                            .foregroundColor(.primary.opacity(0.65))
+                            .foregroundColor(.black.opacity(0.65))
                         
-                        Text("Dwarka 2 • 4.5 km") // Address and distance
-                            .font(.montserrat(.regular, size: 13))
-                            .foregroundColor(.primary.opacity(0.65))
+                        HStack {
+                            Text("\(restaurant.location)")
+                                .font(.montserrat(.regular, size: 13))
+                                .foregroundColor(.black.opacity(0.65))
+                                .lineLimit(1)
+                            Text("• \(restaurant.distance.truncated(to: 1)) miles")
+                                .font(.montserrat(.regular, size: 13))
+                                .foregroundColor(.black.opacity(0.65))
+                        }
                         
                         HStack (spacing: 4){
                             Capsule()
@@ -80,7 +91,7 @@ struct RestraurantListView: View {
                                 .frame(width: 38, height: 18)
                                 .padding(.leading, 4)
                                 .padding(.vertical, 4)
-                            Text("Free Delivery + 10% Off")
+                            Text("Free Delivery above ￡20")
                                 .font(.montserrat(.extraBold, size: 13))
                                 .foregroundColor(.darkPurple)
                         }
@@ -88,17 +99,19 @@ struct RestraurantListView: View {
                         .background(.pink.opacity(0.1))
                         .clipShape(.capsule)
                     }
-                    //.frame(width: 210, height: 142)
                 }
                 .frame(width: 370, alignment: .leading)
-                
-                //Discount Label over image
             }
         }
-        
+        .onAppear {
+            restaurantViewModel.loadRestaurants()
+        }
     }
 }
 
 #Preview {
-    RestraurantListView(restraurantImage: "biryaani by kilo")
+    
+    @Previewable @ObservedObject var restaurantViewModel: RestaurantViewModel = RestaurantViewModel()
+    
+    RestaurantListView(restaurantViewModel: restaurantViewModel)
 }

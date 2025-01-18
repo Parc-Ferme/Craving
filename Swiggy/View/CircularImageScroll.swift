@@ -1,10 +1,3 @@
-//
-//  CircularImageScroll.swift
-//  Swiggy
-//
-//  Created by Ankit Yadav on 16/01/25.
-//
-
 import SwiftUI
 
 struct CircularImageScroll: View {
@@ -66,7 +59,7 @@ struct CircularImageScroll: View {
         
         timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
             
-            // Change the currentIndex every 2 seconds and loop back to 0 when reaching the end
+            // Change the currentIndex every 5 seconds and loop back to 0 when reaching the end
             withAnimation(.easeInOut) {
                 currentIndex = (currentIndex + 1) % banners.count
             }

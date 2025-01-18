@@ -1,25 +1,20 @@
-//
-//  ContentView.swift
-//  Swiggy
-//
-//  Created by Ankit Yadav on 13/01/25.
-//
-
 import SwiftUI
 
 struct SwiggyView: View {
     
+    @StateObject private var restaurantViewModel = RestaurantViewModel()
+    
     @State private var HeaderHeight: CGFloat = 0
     
-    let restraurantImages =  ["bbq", "kfc", "cakes", "burger", "tea", "pizza", "paratha", "paneer", "pakoda", "mcdonalds"]
-    
+    @State var isRedacted: Bool = false
+   
     var body: some View {
         
         NavigationStack {
             
             VStack {
                 
-                HeaderView(HeaderHeight: $HeaderHeight)
+                HeaderView(restaurantViewModel: restaurantViewModel, HeaderHeight: $HeaderHeight)
                 
                 ScrollView {
                     
@@ -31,21 +26,15 @@ struct SwiggyView: View {
                         
                         ZStack {
                             
-                            VStack {
-                                
-                                ForEach(0..<restraurantImages.count, id: \.self) { index in
-                                    
-                                    RestraurantListView(restraurantImage: restraurantImages[index])
-                                }
-                            }
-                            .padding(.top, 60)
+                            RestaurantListView(restaurantViewModel: restaurantViewModel)
+                                .padding(.top, 90)
                             
-                            GeometryReader { gr in
+                            GeometryReader { geometry in
                                 
-                                StickyFilterView()
+                                StickyFilterView(viewModel: restaurantViewModel)
                                     .aspectRatio(contentMode: .fill)
                                     .offset(y: {
-                                        let minY = gr.frame(in: .global).origin.y
+                                        let minY = geometry.frame(in: .global).origin.y
                                         if (minY < HeaderHeight) {
                                             return HeaderHeight - minY
                                         }
@@ -56,35 +45,21 @@ struct SwiggyView: View {
                                             return 0
                                         }
                                     }())
-                                    .shadow(radius: self.calculateHeight(minHeight: 120,
-                                                                         maxHeight: 300,
-                                                                         yOffset: gr.frame(in: .global).origin.y) < 140 ? 8 : 0)
-                                    
-
                             }
                         }
                     }
                 }
-                .scrollBounceBehavior(.basedOnSize)
+                .scrollBounceBehavior(.always)
             }
             .scrollIndicators(.hidden)
         }
         .refreshable {
-            // Add function to refresh screen
+            await refrshSwiggyView()
         }
     }
     
-    func calculateHeight(minHeight: CGFloat, maxHeight: CGFloat, yOffset: CGFloat) -> CGFloat {
-        // If scrolling up, yOffset will be a negative number
-        if maxHeight + yOffset < minHeight {
-            // SCROLLING UP
-            // Never go smaller than our minimum height
-            return minHeight
-        }
-        
-        
-        // SCROLLING DOWN
-        return maxHeight + yOffset
+    func refrshSwiggyView() async {
+        restaurantViewModel.loadRestaurants()
     }
 }
 

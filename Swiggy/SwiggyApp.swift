@@ -14,7 +14,6 @@ struct SwiggyApp: App {
         WindowGroup {
             SwiggyView()
         }
-        .modelContainer(for: Restraurant.self)
     }
 }
 

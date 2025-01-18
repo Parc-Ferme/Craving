@@ -1,15 +1,13 @@
-//
-//  FoodCuisineView.swift
-//  Swiggy
-//
-//  Created by Ankit Yadav on 17/01/25.
-//
-
 import SwiftUI
 
 struct FoodCuisineView: View {
     
     let cuisinesImage = ["bbq", "kfc", "cakes", "burger", "tea", "pizza", "paratha", "paneer", "pakoda", "mcdonalds"]
+    
+    let EfoodCategories = [
+        "Desserts", "Snacks", "Pastries", "Fries", "Breads",
+        "Cheeses", "Soups", "Stews", "Cured Meats", "Seafood", "Savory Pies", "Cakes", "Cookies", "Chocolates", "Sandwiches", "Salads", "Pasta Dishes", "Rice Dishes", "Crepes", "Tarts"
+    ]
     
     var body: some View {
         
@@ -20,7 +18,7 @@ struct FoodCuisineView: View {
                     Text("CRAVINGS FOR ALL YOUR MOODS")
                         .font(.montserrat(.bold, size: 13))
                         .padding(.leading, 16)
-                        .foregroundStyle(Color.primary.opacity(0.8))
+                        .foregroundStyle(Color.black.opacity(0.8))
                         .lineLimit(1)
                     
                     
@@ -29,67 +27,8 @@ struct FoodCuisineView: View {
                         .padding(.bottom, 4)
                 }
                 
-                ScrollView(.horizontal, showsIndicators: false) {
+                TileScrollView(EfoodCategories: EfoodCategories, cuisinesImage: cuisinesImage, tiles: 2)
                     
-                    VStack {
-                        
-                        LazyHStack (spacing: 2) {
-                            
-                            ForEach(0..<10,  id: \.self) { index in
-                                
-                                NavigationLink(destination: AccountView()) {
-                                    
-                                    VStack {
-                                        
-                                        Image(cuisinesImage[index])
-                                            .resizable()
-                                            .clipShape(.circle)
-                                            .frame(width: 70, height: 70)
-                                            .scaledToFit()
-                                            .padding(.horizontal, 10)
-                                            .tag(index)
-                                        
-                                        
-                                        Text("Favorite")
-                                            .font(.montserrat(.regular, size: 13))
-                                            .frame(width: 65, height: 5)
-                                            .foregroundStyle(Color.primary.opacity(0.4))
-                                            .lineLimit(1)
-                                    }
-                                }
-                            }
-                        }
-                        
-                        LazyHStack (spacing: 2) {
-                            
-                            ForEach(0..<10,  id: \.self) { index in
-                                
-                                NavigationLink(destination: AccountView()) {
-                                    
-                                    VStack {
-                                        
-                                        Image(cuisinesImage[index])
-                                            .resizable()
-                                            .clipShape(.circle)
-                                            .frame(width: 70, height: 70)
-                                            .scaledToFit()
-                                            .padding(.horizontal, 10)
-                                            .tag(index)
-                                        
-                                        Text("Favorite")
-                                            .font(.montserrat(.regular, size: 13))
-                                            .frame(width: 65, height: 5)
-                                            .foregroundStyle(Color.primary.opacity(0.4))
-                                            .lineLimit(1)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .padding(.vertical, 10)
-                    .padding([.leading], 6)
-                    
-                }
         }
     }
 }

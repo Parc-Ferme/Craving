@@ -1,17 +1,14 @@
-//
-//  SearchBarView.swift
-//  Swiggy
-//
-//  Created by Ankit Yadav on 16/01/25.
-//
-
 import SwiftUI
 
 struct SearchBarView: View {
     
-    @State private var index = 0
-    @State private var searchText = ""
-    @State private var timer: Timer?
+    @ObservedObject var restaurantViewModel: RestaurantViewModel
+    
+    @State var index = 0
+    @State var timer: Timer?
+    @State var isEditing = false
+    @State var searchText: String
+    
     
     let randomCravings: [String] = ["Indian", "Chinese", "Italian", "American", "Japanese", "Mexican", "Korean", "Bakery", "Fast Food", "Dessert"]
     
@@ -20,10 +17,14 @@ struct SearchBarView: View {
         HStack {
             
             TextField("Search for '\(randomCravings[index])'", text: $searchText)
-                .cornerRadius(15)
                 .padding()
+                .autocorrectionDisabled(true)
                 .animation(.easeInOut(duration: 0.5), value: index)
-                
+                .opacity(isEditing || !searchText.isEmpty ? 1.0 : 0.5)
+                .onTapGesture {
+                    self.isEditing = true
+                }
+            
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.primary.opacity(0.5))
                 .padding()
@@ -37,6 +38,10 @@ struct SearchBarView: View {
         }
         .onDisappear {
             timer?.invalidate()
+        }
+        .onChange(of: restaurantViewModel.searchText) { oldValue, newValue in
+            timer?.invalidate()
+            restaurantViewModel.SearchRestaurant(newValue)
         }
     }
     
@@ -52,5 +57,7 @@ struct SearchBarView: View {
 }
 
 #Preview {
-    SearchBarView()
+    
+    @Previewable @StateObject var rViewModel = RestaurantViewModel()
+    SearchBarView(restaurantViewModel: rViewModel, searchText: rViewModel.searchText)
 }
