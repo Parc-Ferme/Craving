@@ -88,7 +88,7 @@ struct DynamicCapsuleButton<T>: View {
             .padding(.vertical, 10)
             .background(
                 Capsule()
-                    .fill(isTapped ? Color.swiggy : Color.primary.opacity(0.06))
+                    .fill(isTapped ? Color.doordash : Color.primary.opacity(0.06))
             )
             .foregroundColor(isTapped ? .white : Color.primary.opacity(0.6))
         }

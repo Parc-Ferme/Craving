@@ -32,7 +32,7 @@ struct RestaurantDetailTile: View {
                 
             }
             
-            FadingLineView(color: .swiggy, height: 1)
+            FadingLineView(color: .doordash, height: 1)
             
             VStack(alignment: .leading) {
                 Text(restaurant.cuisine.joined(separator: ", "))
@@ -42,7 +42,7 @@ struct RestaurantDetailTile: View {
                     .foregroundColor(.gray)
             }
             
-            FadingLineView(color: .swiggy, height: 1)
+            FadingLineView(color: .doordash, height: 1)
             
         }
         .padding()

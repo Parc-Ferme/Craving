@@ -1,6 +1,6 @@
 //
-//  SwiggyApp.swift
-//  Swiggy
+//  doordashApp.swift
+//  doordash
 //
 //  Created by Ankit Yadav on 13/01/25.
 //
@@ -11,7 +11,7 @@ import SwiftUI
 struct DoorDashApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DoorDashView()
         }
     }
 }

@@ -15,7 +15,7 @@ extension Color {
     static let darkGreen = Color(red: 0.0, green: 0.5, blue: 0.0)
     static let darkPurple = Color(red: 68/255, green: 23/255, blue: 82/255)
     static let gold = Color(red: 223/255, green: 151/255, blue: 85/255)
-    static let swiggy = Color(red: 235/255, green: 90/255, blue: 60/255)
+    static let doordash = Color(red: 235/255, green: 90/255, blue: 60/255)
 }
 
 // MARK: Custom Fonts

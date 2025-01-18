@@ -54,11 +54,11 @@ struct DoorDashView: View {
             .scrollIndicators(.hidden)
         }
         .refreshable {
-            await refrshSwiggyView()
+            await refrshdoordashView()
         }
     }
     
-    func refrshSwiggyView() async {
+    func refrshdoordashView() async {
         restaurantViewModel.loadRestaurants()
     }
 }

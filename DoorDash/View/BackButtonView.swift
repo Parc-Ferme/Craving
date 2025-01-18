@@ -17,7 +17,7 @@ struct BackButtonView: View {
                 .background(Color.white)
                 .overlay(
                     Circle()
-                        .stroke(LinearGradient(colors: [.swiggy, .white], startPoint: .top, endPoint: .bottom), lineWidth: 4)
+                        .stroke(LinearGradient(colors: [.doordash, .white], startPoint: .top, endPoint: .bottom), lineWidth: 4)
                 )
                 .foregroundStyle(Color.primary.opacity(0.6))
                 .clipShape(.circle)

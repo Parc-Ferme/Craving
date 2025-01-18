@@ -49,7 +49,7 @@ struct MenuListView: View {
                     .frame(width: 370, height: 200, alignment: .leading)
                 }
                 
-                FadingLineView(color: .swiggy, height: 2)
+                FadingLineView(color: .doordash, height: 2)
                     .padding(.trailing, 150)
                     .padding(.leading, 20)
             }
