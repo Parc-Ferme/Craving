@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SwiggyView: View {
+struct DoorDashView: View {
     
     @StateObject private var restaurantViewModel = RestaurantViewModel()
     
@@ -64,5 +64,5 @@ struct SwiggyView: View {
 }
 
 #Preview {
-    SwiggyView()
+    DoorDashView()
 }

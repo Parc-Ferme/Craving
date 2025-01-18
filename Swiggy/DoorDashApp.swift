@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct SwiggyApp: App {
+struct DoorDashApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
