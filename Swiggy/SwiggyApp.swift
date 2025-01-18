@@ -6,17 +6,12 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct SwiggyApp: App {
     var body: some Scene {
         WindowGroup {
-            SwiggyView()
+            ContentView()
         }
     }
 }
-
-
-
-
